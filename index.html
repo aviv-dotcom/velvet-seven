@@ -1,0 +1,900 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Velvet Seven</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Limelight&family=Chakra+Petch:wght@500;700&family=Outfit:wght@400;600&display=swap">
+<style>
+/* Layout: one art-deco cabinet centred on a velvet wall — marquee, reel window, LCD readouts, controls, pay table below. Single deliberate dark look. */
+:root {
+  color-scheme: dark;
+  --velvet: #2b0a16;
+  --velvet-deep: #12040a;
+  --velvet-lift: #3d1222;
+  --brass: #e6b85c;
+  --brass-hi: #fff0c2;
+  --brass-dim: #8a6a2e;
+  --ivory: #f5e9d3;
+  --ivory-dim: #bfa98f;
+  --ruby: #ff3d5e;
+  --lcd: #0b0306;
+  --lcd-text: #ffcf6b;
+  --glass: rgba(255, 240, 200, .07);
+  --f-display: "Limelight", "Didot", Georgia, serif;
+  --f-data: "Chakra Petch", "Consolas", ui-monospace, monospace;
+  --f-body: "Outfit", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --cell: clamp(56px, 15.5vw, 112px);
+}
+html, body { height: 100%; }
+body {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 30%, var(--velvet-lift), transparent 70%),
+    repeating-conic-gradient(from 0deg at 50% 32%, rgba(230,184,92,.045) 0deg 4deg, transparent 4deg 12deg),
+    var(--velvet-deep);
+  background-attachment: fixed;
+  color: var(--ivory);
+  font-family: var(--f-body);
+  font-size: 15px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 48px;
+  overflow-x: hidden;
+}
+* { box-sizing: border-box; }
+button { font: inherit; color: inherit; cursor: pointer; }
+button:focus-visible, summary:focus-visible { outline: 2px solid var(--brass-hi); outline-offset: 3px; }
+
+.stage { max-width: 820px; margin: 0 auto; display: flex; flex-direction: column; gap: 28px; align-items: center; }
+
+/* ---------- cabinet ---------- */
+.cabinet-row { display: flex; align-items: center; gap: 0; width: 100%; justify-content: center; }
+.cabinet {
+  position: relative;
+  width: 100%;
+  max-width: 740px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.06), transparent 30%),
+    linear-gradient(135deg, var(--velvet-lift), var(--velvet) 55%, var(--velvet-deep));
+  border-radius: 28px 28px 18px 18px;
+  padding: 18px clamp(12px, 3vw, 28px) 22px;
+  border: 3px solid var(--brass-dim);
+  box-shadow:
+    0 0 0 1px var(--brass) inset,
+    0 0 0 6px var(--velvet-deep),
+    0 0 0 8px var(--brass-dim),
+    0 30px 80px rgba(0,0,0,.6),
+    0 0 120px rgba(255,61,94,.12);
+  display: flex; flex-direction: column; gap: 16px;
+}
+
+/* marquee */
+.marquee {
+  position: relative;
+  text-align: center;
+  padding: 18px 12px 14px;
+  border-radius: 18px 18px 8px 8px;
+  background: radial-gradient(ellipse at 50% 120%, rgba(255,61,94,.35), transparent 65%), var(--velvet-deep);
+  border: 2px solid var(--brass-dim);
+  overflow: hidden;
+}
+.bulbs { position: absolute; left: 10px; right: 10px; display: flex; justify-content: space-between; pointer-events: none; }
+.bulbs.top { top: 5px; } .bulbs.bottom { bottom: 5px; }
+.bulbs i {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--brass-dim);
+  animation: chase 1.2s linear infinite;
+}
+@keyframes chase {
+  0%, 100% { background: var(--brass-dim); box-shadow: none; }
+  15% { background: var(--brass-hi); box-shadow: 0 0 8px 2px var(--brass); }
+  40% { background: var(--brass-dim); box-shadow: none; }
+}
+.cabinet.celebrate .bulbs i { animation-duration: .35s; }
+.title {
+  font-family: var(--f-display);
+  font-weight: 400;
+  font-size: clamp(34px, 8vw, 64px);
+  line-height: 1;
+  margin: 6px 0 4px;
+  letter-spacing: .04em;
+  background: linear-gradient(180deg, var(--brass-hi) 10%, var(--brass) 50%, #9a6512 90%);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 18px rgba(230,184,92,.35));
+  text-wrap: balance;
+}
+.title b { font-weight: 400; color: transparent; background: linear-gradient(180deg, #ffd0d8, var(--ruby) 55%, #8a0020); -webkit-background-clip: text; background-clip: text; }
+.jackpot {
+  display: inline-flex; align-items: baseline; gap: 10px;
+  font-family: var(--f-data); font-weight: 700;
+  color: var(--lcd-text);
+  font-variant-numeric: tabular-nums;
+}
+.jackpot small { font-size: 11px; letter-spacing: .22em; text-transform: uppercase; color: var(--ivory-dim); font-weight: 500; }
+.jackpot span { font-size: clamp(18px, 4vw, 26px); text-shadow: 0 0 12px rgba(255,207,107,.6); }
+
+/* reel window */
+.window {
+  position: relative;
+  padding: 10px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #1a0710, #0a0205);
+  border: 2px solid var(--brass);
+  box-shadow: 0 0 0 4px var(--velvet-deep), inset 0 0 30px rgba(0,0,0,.9);
+}
+.reels {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: clamp(4px, 1vw, 8px);
+}
+.reel {
+  position: relative;
+  height: calc(var(--cell) * 3);
+  overflow: hidden;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #d9cbb2, #fffaf0 30%, #fffaf0 70%, #d9cbb2);
+  box-shadow: inset 0 14px 18px -8px rgba(0,0,0,.65), inset 0 -14px 18px -8px rgba(0,0,0,.65);
+}
+.reel::after { /* glass curvature */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,.45), transparent 22%, transparent 78%, rgba(0,0,0,.45));
+}
+.reel.tease { box-shadow: 0 0 0 2px var(--ruby), 0 0 24px rgba(255,61,94,.8), inset 0 14px 18px -8px rgba(0,0,0,.65); animation: tease .25s ease-in-out infinite alternate; }
+@keyframes tease { to { box-shadow: 0 0 0 2px var(--brass-hi), 0 0 34px rgba(255,207,107,.9), inset 0 14px 18px -8px rgba(0,0,0,.65); } }
+.strip { display: flex; flex-direction: column; will-change: transform; }
+.cell {
+  height: var(--cell);
+  display: grid; place-items: center;
+  position: relative;
+}
+.cell svg { width: 78%; height: 78%; filter: drop-shadow(0 3px 2px rgba(0,0,0,.35)); }
+.cell.win { animation: winpulse .7s ease-in-out infinite alternate; z-index: 1; }
+.cell.win::before {
+  content: ""; position: absolute; inset: 4px; border-radius: 8px;
+  background: radial-gradient(circle, rgba(255,207,107,.55), transparent 70%);
+  box-shadow: 0 0 0 2px var(--brass) inset;
+}
+@keyframes winpulse { from { transform: scale(1); } to { transform: scale(1.1); } }
+.lines { position: absolute; inset: 0; pointer-events: none; overflow: visible; z-index: 2; }
+.lines polyline { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; filter: drop-shadow(0 0 6px currentColor); }
+.glare { position: absolute; inset: 10px; border-radius: 8px; pointer-events: none; z-index: 3;
+  background: linear-gradient(115deg, var(--glass) 0 18%, transparent 18% 60%, rgba(255,255,255,.04) 60% 66%, transparent 66%); }
+
+/* message ticker */
+.ticker {
+  font-family: var(--f-data); font-weight: 500;
+  text-align: center; min-height: 1.6em;
+  letter-spacing: .06em; text-transform: uppercase; font-size: 13px;
+  color: var(--ivory-dim);
+}
+.ticker.hot { color: var(--lcd-text); text-shadow: 0 0 10px rgba(255,207,107,.6); }
+
+/* readouts */
+.readouts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.lcd {
+  background: var(--lcd);
+  border: 1px solid var(--brass-dim);
+  border-radius: 10px;
+  padding: 8px 12px 10px;
+  box-shadow: inset 0 2px 10px rgba(0,0,0,.8);
+  min-width: 0;
+}
+.lcd label { display: block; font-size: 10px; letter-spacing: .22em; text-transform: uppercase; color: var(--ivory-dim); }
+.lcd output {
+  display: block; font-family: var(--f-data); font-weight: 700;
+  font-size: clamp(18px, 4.4vw, 28px);
+  color: var(--lcd-text); font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 10px rgba(255,207,107,.45);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.lcd.win output { color: #ff8fa3; text-shadow: 0 0 12px rgba(255,61,94,.7); }
+
+/* controls */
+.controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.group { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.chip {
+  border: 1px solid var(--brass-dim);
+  background: linear-gradient(180deg, var(--velvet-lift), var(--velvet-deep));
+  border-radius: 999px;
+  padding: 9px 14px;
+  font-family: var(--f-data); font-weight: 700; font-size: 13px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--ivory);
+  transition: transform .1s, border-color .15s, box-shadow .15s;
+}
+.chip:hover:not(:disabled) { border-color: var(--brass); box-shadow: 0 0 12px rgba(230,184,92,.35); }
+.chip:active:not(:disabled) { transform: translateY(1px); }
+.chip:disabled { opacity: .4; cursor: not-allowed; }
+.chip[aria-pressed="true"] { border-color: var(--ruby); color: #ffd0d8; box-shadow: 0 0 14px rgba(255,61,94,.55); }
+.chip.round { width: 40px; height: 40px; padding: 0; font-size: 20px; line-height: 1; }
+.betlabel { font-family: var(--f-data); font-size: 12px; color: var(--ivory-dim); letter-spacing: .08em; text-transform: uppercase; min-width: 6.5em; text-align: center; }
+.betlabel strong { display: block; color: var(--ivory); font-size: 16px; }
+
+.spin {
+  position: relative;
+  width: 96px; height: 96px; border-radius: 50%;
+  border: 3px solid var(--brass);
+  background: radial-gradient(circle at 35% 30%, #ff9aab, var(--ruby) 40%, #8a0020 80%);
+  box-shadow: 0 6px 0 #5a0014, 0 10px 24px rgba(0,0,0,.6), 0 0 30px rgba(255,61,94,.45);
+  font-family: var(--f-display); font-size: 22px; letter-spacing: .06em; color: #fff4e6;
+  text-shadow: 0 2px 2px rgba(0,0,0,.4);
+  transition: transform .08s, box-shadow .08s;
+}
+.spin:hover:not(:disabled) { box-shadow: 0 6px 0 #5a0014, 0 10px 24px rgba(0,0,0,.6), 0 0 44px rgba(255,61,94,.8); }
+.spin:active:not(:disabled) { transform: translateY(5px); box-shadow: 0 1px 0 #5a0014, 0 4px 10px rgba(0,0,0,.6); }
+.spin:disabled { filter: saturate(.4) brightness(.8); cursor: wait; }
+
+/* lever */
+.lever {
+  position: relative; width: 54px; height: 300px; margin-left: -6px; flex: none;
+  border: 0; background: none; padding: 0;
+  touch-action: none;
+}
+.lever .base { position: absolute; left: 0; top: 120px; width: 26px; height: 84px; border-radius: 0 12px 12px 0;
+  background: linear-gradient(90deg, #6b4a17, var(--brass) 50%, #6b4a17); box-shadow: 0 6px 16px rgba(0,0,0,.5); }
+.lever .arm { position: absolute; left: 16px; top: 160px; width: 30px; height: 150px; transform-origin: 50% 0; transform: translateY(-150px); transition: transform .35s cubic-bezier(.3,1.6,.5,1); }
+.lever .rod { position: absolute; left: 11px; top: 0; width: 8px; height: 150px; border-radius: 4px; background: linear-gradient(90deg, #8f8f99, #f2f2f5 45%, #6c6c75); }
+.lever .knob { position: absolute; left: 0; top: -16px; width: 30px; height: 30px; border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ff9aab, var(--ruby) 45%, #7a001c); box-shadow: 0 4px 10px rgba(0,0,0,.6); }
+.lever.pulled .arm { transform: translateY(-150px) scaleY(-1); transition: transform .18s ease-in; }
+.lever:disabled { cursor: wait; }
+@media (max-width: 860px) { .lever { display: none; } }
+
+.footnote { font-size: 12px; color: var(--ivory-dim); text-align: center; letter-spacing: .02em; }
+.footnote kbd { font-family: var(--f-data); border: 1px solid var(--brass-dim); border-radius: 4px; padding: 0 5px; color: var(--ivory); }
+
+/* pay table */
+.paytable { width: 100%; max-width: 740px; }
+.paytable summary {
+  list-style: none; cursor: pointer; text-align: center;
+  font-family: var(--f-display); font-size: 22px; color: var(--brass); letter-spacing: .06em;
+  padding: 8px;
+}
+.paytable summary::-webkit-details-marker { display: none; }
+.paytable summary::after { content: " ▾"; font-size: 14px; }
+.paytable[open] summary::after { content: " ▴"; }
+.paygrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-top: 10px; }
+.payrow {
+  display: grid; grid-template-columns: 56px 1fr; gap: 10px; align-items: center;
+  background: rgba(18,4,10,.75); border: 1px solid rgba(138,106,46,.5); border-radius: 10px; padding: 8px 10px;
+}
+.payrow .icon { width: 56px; height: 56px; border-radius: 8px; background: linear-gradient(90deg, #d9cbb2, #fffaf0 30%, #fffaf0 70%, #d9cbb2); display: grid; place-items: center; }
+.payrow .icon svg { width: 80%; height: 80%; }
+.payrow dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 1px 8px; font-family: var(--f-data); font-size: 13px; font-variant-numeric: tabular-nums; }
+.payrow dt { color: var(--ivory-dim); }
+.payrow dd { margin: 0; color: var(--lcd-text); text-align: right; }
+.payrow .nm { grid-column: 1 / -1; font-family: var(--f-body); font-weight: 600; color: var(--ivory); font-size: 13px; margin-bottom: 2px; }
+.rules { margin-top: 16px; display: grid; gap: 14px; }
+.rules p { margin: 0; color: var(--ivory-dim); line-height: 1.55; max-width: 65ch; margin-inline: auto; text-align: center; }
+.linemaps { display: grid; grid-template-columns: repeat(auto-fill, minmax(92px, 1fr)); gap: 8px; }
+.linemap { background: rgba(18,4,10,.75); border: 1px solid rgba(138,106,46,.5); border-radius: 8px; padding: 6px; text-align: center; font-family: var(--f-data); font-size: 11px; color: var(--ivory-dim); }
+.linemap svg { width: 100%; height: auto; display: block; margin-bottom: 3px; }
+
+/* overlays */
+#fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; }
+.bigwin {
+  position: fixed; inset: 0; z-index: 40; display: grid; place-items: center;
+  background: radial-gradient(circle, rgba(43,10,22,.55), rgba(12,2,6,.88));
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  cursor: pointer;
+}
+.bigwin .inner { text-align: center; animation: pop .5s cubic-bezier(.2,1.6,.4,1) both; }
+.bigwin h2 {
+  font-family: var(--f-display); font-weight: 400; margin: 0;
+  font-size: clamp(48px, 13vw, 120px); line-height: 1;
+  background: linear-gradient(180deg, var(--brass-hi), var(--brass) 50%, #9a6512);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 30px rgba(230,184,92,.6));
+}
+.bigwin .amt { font-family: var(--f-data); font-weight: 700; font-size: clamp(36px, 9vw, 72px); color: var(--lcd-text); font-variant-numeric: tabular-nums; text-shadow: 0 0 20px rgba(255,207,107,.7); }
+.bigwin .tap { margin-top: 14px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--ivory-dim); }
+@keyframes pop { from { transform: scale(.4) rotate(-6deg); opacity: 0; } to { transform: none; opacity: 1; } }
+.shake { animation: shake .4s; }
+@keyframes shake { 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(3px)} }
+
+.broke { display: flex; justify-content: center; }
+
+@media (max-width: 520px) {
+  .controls { justify-content: center; }
+  .spin { width: 84px; height: 84px; font-size: 19px; }
+  .readouts { gap: 6px; }
+  .lcd { padding: 6px 8px 8px; }
+  .lcd label { font-size: 9px; letter-spacing: .14em; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bulbs i, .cell.win, .reel.tease { animation: none !important; }
+  .bulbs i { background: var(--brass); }
+}
+</style>
+</head>
+<body>
+
+<!-- symbol art -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <radialGradient id="gCherry" cx="35%" cy="32%" r="70%"><stop offset="0" stop-color="#ff9a9a"/><stop offset=".45" stop-color="#e01b3c"/><stop offset="1" stop-color="#6a0012"/></radialGradient>
+    <radialGradient id="gLemon" cx="40%" cy="35%" r="70%"><stop offset="0" stop-color="#fffbd0"/><stop offset=".5" stop-color="#ffd92e"/><stop offset="1" stop-color="#c48a00"/></radialGradient>
+    <radialGradient id="gPlum" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#e7b8ff"/><stop offset=".5" stop-color="#8a2be2"/><stop offset="1" stop-color="#3b0a63"/></radialGradient>
+    <linearGradient id="gGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff1b8"/><stop offset=".45" stop-color="#f2c14e"/><stop offset="1" stop-color="#9a6512"/></linearGradient>
+    <linearGradient id="gSeven" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb3c0"/><stop offset=".5" stop-color="#ff1f48"/><stop offset="1" stop-color="#7a0016"/></linearGradient>
+    <linearGradient id="gGem" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d6fbff"/><stop offset=".5" stop-color="#2ec5e8"/><stop offset="1" stop-color="#0b4f8a"/></linearGradient>
+  </defs>
+  <symbol id="s-cherry" viewBox="0 0 100 100">
+    <path d="M52 14 C46 34 38 46 31 56" stroke="#2f7a2b" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+    <path d="M52 14 C58 32 64 42 69 54" stroke="#2f7a2b" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+    <path d="M52 14 C62 4 80 6 88 16 C74 24 60 22 52 14Z" fill="#4fb548" stroke="#2f7a2b" stroke-width="2"/>
+    <circle cx="30" cy="68" r="18" fill="url(#gCherry)" stroke="#5a000f" stroke-width="2"/>
+    <circle cx="70" cy="66" r="18" fill="url(#gCherry)" stroke="#5a000f" stroke-width="2"/>
+    <ellipse cx="23" cy="61" rx="5" ry="3.5" fill="#fff" opacity=".75"/>
+    <ellipse cx="63" cy="59" rx="5" ry="3.5" fill="#fff" opacity=".75"/>
+  </symbol>
+  <symbol id="s-lemon" viewBox="0 0 100 100">
+    <path d="M12 52 C18 28 46 18 70 24 C82 27 89 36 89 46 C94 50 94 56 88 56 C82 76 54 86 30 76 C20 72 14 64 9 59 C5 55 7 52 12 52Z" fill="url(#gLemon)" stroke="#a87400" stroke-width="2.5"/>
+    <ellipse cx="40" cy="38" rx="12" ry="5" transform="rotate(-18 40 38)" fill="#fff" opacity=".6"/>
+  </symbol>
+  <symbol id="s-plum" viewBox="0 0 100 100">
+    <path d="M50 22 L50 10" stroke="#5a3b12" stroke-width="4" stroke-linecap="round"/>
+    <path d="M50 14 C60 4 76 8 80 16 C70 20 58 20 50 14Z" fill="#4fb548" stroke="#2f7a2b" stroke-width="2"/>
+    <g fill="url(#gPlum)" stroke="#2a0548" stroke-width="2">
+      <circle cx="33" cy="36" r="12"/><circle cx="50" cy="32" r="12"/><circle cx="67" cy="36" r="12"/>
+      <circle cx="40" cy="54" r="12"/><circle cx="60" cy="54" r="12"/>
+      <circle cx="50" cy="72" r="12"/>
+    </g>
+  </symbol>
+  <symbol id="s-bell" viewBox="0 0 100 100">
+    <circle cx="50" cy="13" r="6" fill="url(#gGold)" stroke="#7a4d0c" stroke-width="2"/>
+    <path d="M50 16 C33 16 27 32 27 47 C27 61 23 69 13 76 L87 76 C77 69 73 61 73 47 C73 32 67 16 50 16Z" fill="url(#gGold)" stroke="#7a4d0c" stroke-width="2.5"/>
+    <rect x="11" y="74" width="78" height="8" rx="4" fill="url(#gGold)" stroke="#7a4d0c" stroke-width="2"/>
+    <circle cx="50" cy="88" r="7" fill="#7a4d0c"/>
+    <path d="M38 28 C33 36 33 48 34 58" stroke="#fff" stroke-width="4" opacity=".55" fill="none" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="s-bar" viewBox="0 0 100 100">
+    <rect x="8" y="30" width="84" height="40" rx="7" fill="#1b0a10" stroke="url(#gGold)" stroke-width="5"/>
+    <text x="50" y="61" text-anchor="middle" font-family="Chakra Petch, Consolas, monospace" font-weight="700" font-size="28" letter-spacing="2" fill="url(#gGold)">BAR</text>
+  </symbol>
+  <symbol id="s-seven" viewBox="0 0 100 100">
+    <text x="50" y="88" text-anchor="middle" font-family="Limelight, Georgia, serif" font-size="96" fill="url(#gSeven)" stroke="#f2c14e" stroke-width="3.5" paint-order="stroke">7</text>
+  </symbol>
+  <symbol id="s-gem" viewBox="0 0 100 100">
+    <polygon points="50,90 8,38 26,14 74,14 92,38" fill="url(#gGem)" stroke="#06345e" stroke-width="2.5" stroke-linejoin="round"/>
+    <polygon points="26,14 38,38 50,14" fill="#e8fdff" opacity=".7"/>
+    <polygon points="50,14 62,38 74,14" fill="#b8f2ff" opacity=".5"/>
+    <path d="M8 38 H92 M38 38 L50 90 L62 38 M26 14 L38 38 L50 14 L62 38 L74 14" stroke="#06345e" stroke-width="1.5" fill="none" opacity=".6"/>
+  </symbol>
+  <symbol id="s-wild" viewBox="0 0 100 100">
+    <polygon points="50,6 60.6,35.4 91,36 67.1,55.6 76,88 50,69 24,88 32.9,55.6 9,36 39.4,35.4" fill="url(#gGold)" stroke="#7a4d0c" stroke-width="2.5" stroke-linejoin="round"/>
+    <rect x="16" y="44" width="68" height="20" rx="4" fill="#ff1f48" stroke="#fff1b8" stroke-width="2"/>
+    <text x="50" y="59.5" text-anchor="middle" font-family="Chakra Petch, Consolas, monospace" font-weight="700" font-size="15" letter-spacing="2" fill="#fff">WILD</text>
+  </symbol>
+</svg>
+
+<main class="stage">
+  <div class="cabinet-row">
+    <section class="cabinet" id="cabinet" aria-label="Slot machine">
+      <header class="marquee">
+        <div class="bulbs top" id="bulbsTop"></div>
+        <h1 class="title">Velvet <b>Seven</b></h1>
+        <div class="jackpot"><small>Progressive jackpot</small><span id="jackpot">5,000</span></div>
+        <div class="bulbs bottom" id="bulbsBottom"></div>
+      </header>
+
+      <div class="window">
+        <div class="reels" id="reels"></div>
+        <svg class="lines" id="lines" aria-hidden="true"></svg>
+        <div class="glare"></div>
+      </div>
+
+      <p class="ticker" id="ticker" role="status" aria-live="polite">Pull the lever or press Spin. Ten lines, wilds substitute.</p>
+
+      <div class="readouts">
+        <div class="lcd"><label for="credits">Credits</label><output id="credits">1,000</output></div>
+        <div class="lcd"><label for="totalbet">Total bet</label><output id="totalbet">10</output></div>
+        <div class="lcd win"><label for="win">Win</label><output id="win">0</output></div>
+      </div>
+
+      <div class="controls">
+        <div class="group">
+          <button class="chip round" id="betDown" aria-label="Lower bet">−</button>
+          <div class="betlabel">Line bet<strong id="linebet">1</strong></div>
+          <button class="chip round" id="betUp" aria-label="Raise bet">+</button>
+          <button class="chip" id="maxBet">Max bet</button>
+        </div>
+        <button class="spin" id="spin">Spin</button>
+        <div class="group">
+          <button class="chip" id="auto" aria-pressed="false">Auto</button>
+          <button class="chip" id="turbo" aria-pressed="false">Turbo</button>
+          <button class="chip" id="sound" aria-pressed="true">Sound</button>
+        </div>
+      </div>
+      <div class="broke" id="brokeRow" hidden><button class="chip" id="refill">Out of credits — top up 1,000</button></div>
+    </section>
+    <button class="lever" id="lever" aria-label="Pull lever to spin">
+      <span class="base"></span>
+      <span class="arm"><span class="rod"></span><span class="knob"></span></span>
+    </button>
+  </div>
+
+  <p class="footnote">Free play with pretend credits. No real money. <kbd>Space</kbd> spins.</p>
+
+  <details class="paytable" id="paytable">
+    <summary>Pay table</summary>
+    <div class="paygrid" id="paygrid"></div>
+    <div class="rules">
+      <p>Wins pay left to right on any of the ten lines, starting from the first reel. Payouts are multiples of your line bet. Wild stands in for every symbol, and five diamonds on a line also take the progressive jackpot.</p>
+      <div class="linemaps" id="linemaps"></div>
+    </div>
+  </details>
+</main>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="bigwin" id="bigwin" hidden>
+  <div class="inner">
+    <h2 id="bigTitle">Big win</h2>
+    <div class="amt" id="bigAmt">0</div>
+    <div class="tap">Tap to collect</div>
+  </div>
+</div>
+
+<!-- ================= Amplitude analytics ================= -->
+<script src="https://cdn.jsdelivr.net/npm/@amplitude/analytics-browser@2.11.1/lib/scripts/amplitude-min.js"></script>
+<script>
+  // Paste your Amplitude project API key here (Amplitude > Settings > Projects > your project > General).
+  // For an EU data-center project, set AMPLITUDE_SERVER_ZONE to 'EU'.
+  const AMPLITUDE_API_KEY = 'YOUR_AMPLITUDE_API_KEY';
+  const AMPLITUDE_SERVER_ZONE = 'US';
+
+  // Small wrapper so the game never breaks if the SDK is missing, blocked or the key isn't set.
+  window.analytics = (() => {
+    const amp = window.amplitude;
+    const ready = !!amp && AMPLITUDE_API_KEY && AMPLITUDE_API_KEY !== 'YOUR_AMPLITUDE_API_KEY';
+    if (ready) {
+      try {
+        amp.init(AMPLITUDE_API_KEY, {
+          serverZone: AMPLITUDE_SERVER_ZONE,
+          autocapture: { sessions: true, pageViews: true, attribution: true, formInteractions: false, fileDownloads: false, elementInteractions: false },
+        });
+      } catch (e) { console.warn('[analytics] init failed', e); }
+    } else {
+      console.info('[analytics] Amplitude disabled: set AMPLITUDE_API_KEY to send events.');
+    }
+    return {
+      track(name, props) {
+        if (!ready) return;
+        try { amp.track(name, props); } catch (e) { console.warn('[analytics] track failed', e); }
+      },
+      setUserProps(set, add) {
+        if (!ready) return;
+        try {
+          const id = new amp.Identify();
+          for (const [k, v] of Object.entries(set || {})) id.set(k, v);
+          for (const [k, v] of Object.entries(add || {})) id.add(k, v);
+          amp.identify(id);
+        } catch (e) { console.warn('[analytics] identify failed', e); }
+      },
+    };
+  })();
+</script>
+
+<script>
+(() => {
+  const track = (n, p) => window.analytics?.track(n, p);
+  const identify = (s, a) => window.analytics?.setUserProps(s, a);
+  // ---------- config ----------
+  const SYMS = [
+    { id: 'cherry', name: 'Cherry',  w: 22, pay: { 3: 10,  4: 25,   5: 60 } },
+    { id: 'lemon',  name: 'Lemon',   w: 22, pay: { 3: 10,  4: 25,   5: 60 } },
+    { id: 'plum',   name: 'Grapes',  w: 18, pay: { 3: 15,  4: 40,   5: 100 } },
+    { id: 'bell',   name: 'Bell',    w: 14, pay: { 3: 20,  4: 60,   5: 160 } },
+    { id: 'bar',    name: 'Bar',     w: 10, pay: { 3: 30,  4: 100,  5: 300 } },
+    { id: 'seven',  name: 'Seven',   w: 6,  pay: { 3: 50,  4: 200,  5: 800 } },
+    { id: 'gem',    name: 'Diamond', w: 4,  pay: { 3: 100, 4: 400,  5: 2000 } },
+    { id: 'wild',   name: 'Wild',    w: 4,  pay: { 3: 250, 4: 1000, 5: 5000 } },
+  ];
+  const BY_ID = Object.fromEntries(SYMS.map(s => [s.id, s]));
+  const TOTAL_W = SYMS.reduce((a, s) => a + s.w, 0);
+  const LINES = [
+    [1,1,1,1,1],[0,0,0,0,0],[2,2,2,2,2],[0,1,2,1,0],[2,1,0,1,2],
+    [0,0,1,2,2],[2,2,1,0,0],[1,0,0,0,1],[1,2,2,2,1],[1,0,1,2,1],
+  ];
+  const LINE_COLORS = ['#ffcf6b','#ff5e7e','#5ee0ff','#b38bff','#7dff9e','#ff9f43','#ff7ad9','#e6ff5e','#5effd2','#ffffff'];
+  const BETS = [1, 2, 5, 10, 25];
+  const REELS = 5, ROWS = 3;
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // ---------- state ----------
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem('velvet7:' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+    set(k, v) { try { localStorage.setItem('velvet7:' + k, JSON.stringify(v)); } catch {} },
+  };
+  const hotData = window.claude?.hot?.data ?? {};
+  const st = {
+    credits: hotData.credits ?? store.get('credits', 1000),
+    jackpot: hotData.jackpot ?? store.get('jackpot', 5000),
+    betIdx: hotData.betIdx ?? store.get('betIdx', 0),
+    turbo: store.get('turbo', false),
+    sound: store.get('sound', true),
+    auto: false,
+    spinning: false,
+    grid: null,
+  };
+  window.claude?.hot?.snapshot?.(() => ({ credits: st.credits, jackpot: st.jackpot, betIdx: st.betIdx }));
+
+  const $ = id => document.getElementById(id);
+  const fmt = n => Math.round(n).toLocaleString('en-US');
+  const rand = () => { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; };
+  const pick = () => { let r = rand() * TOTAL_W; for (const s of SYMS) { if ((r -= s.w) < 0) return s.id; } return SYMS[0].id; };
+  const icon = id => `<svg viewBox="0 0 100 100" aria-hidden="true"><use href="#s-${id}"/></svg>`;
+  const lineBet = () => BETS[st.betIdx];
+  const totalBet = () => lineBet() * LINES.length;
+
+  // ---------- audio ----------
+  let ac = null;
+  function audio() {
+    if (!st.sound) return null;
+    if (!ac) { try { ac = new (window.AudioContext || window.webkitAudioContext)(); } catch { return null; } }
+    if (ac.state === 'suspended') ac.resume();
+    return ac;
+  }
+  function tone(freq, dur = .08, type = 'square', vol = .05, when = 0, slide = 0) {
+    const c = audio(); if (!c) return;
+    const t = c.currentTime + when;
+    const o = c.createOscillator(), g = c.createGain();
+    o.type = type; o.frequency.setValueAtTime(freq, t);
+    if (slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, freq + slide), t + dur);
+    g.gain.setValueAtTime(vol, t); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+    o.connect(g).connect(c.destination); o.start(t); o.stop(t + dur + .02);
+  }
+  const sfx = {
+    tick: () => tone(1400 + rand() * 300, .025, 'square', .015),
+    stop: () => { tone(160, .12, 'triangle', .12, 0, -80); tone(90, .1, 'sine', .1); },
+    lever: () => tone(300, .25, 'sawtooth', .04, 0, -220),
+    win: (big) => {
+      const notes = big ? [523, 659, 784, 1047, 784, 1047, 1319, 1568] : [659, 784, 1047];
+      notes.forEach((f, i) => tone(f, .16, 'square', .05, i * (big ? .11 : .09)));
+    },
+    coin: () => tone(1800 + rand() * 600, .05, 'triangle', .03),
+    tease: () => tone(220, .2, 'sawtooth', .025, 0, 220),
+  };
+
+  // ---------- build reels ----------
+  const reelsEl = $('reels');
+  const reels = [];
+  st.grid = Array.from({ length: REELS }, () => Array.from({ length: ROWS }, pick));
+  for (let r = 0; r < REELS; r++) {
+    const reel = document.createElement('div'); reel.className = 'reel';
+    const strip = document.createElement('div'); strip.className = 'strip';
+    reel.appendChild(strip); reelsEl.appendChild(reel);
+    reels.push({ reel, strip });
+    renderStrip(r, st.grid[r]);
+  }
+  function renderStrip(r, syms) {
+    reels[r].strip.innerHTML = syms.map(id => `<div class="cell" data-sym="${id}">${icon(id)}</div>`).join('');
+    reels[r].strip.style.transform = 'translateY(0)';
+  }
+
+  // bulbs
+  for (const id of ['bulbsTop', 'bulbsBottom']) {
+    const el = $(id); const n = 22;
+    el.innerHTML = Array.from({ length: n }, (_, i) => `<i style="animation-delay:${(id === 'bulbsTop' ? i : n - i) * -0.06}s"></i>`).join('');
+  }
+
+  // pay table
+  $('paygrid').innerHTML = SYMS.slice().reverse().map(s => `
+    <div class="payrow"><div class="icon">${icon(s.id)}</div>
+      <dl><span class="nm">${s.name}</span>
+        <dt>5×</dt><dd>${fmt(s.pay[5])}</dd><dt>4×</dt><dd>${fmt(s.pay[4])}</dd><dt>3×</dt><dd>${fmt(s.pay[3])}</dd>
+      </dl></div>`).join('');
+  $('linemaps').innerHTML = LINES.map((ln, i) => {
+    const dots = []; for (let c = 0; c < 5; c++) for (let r = 0; r < 3; r++)
+      dots.push(`<rect x="${c * 20 + 2}" y="${r * 20 + 2}" width="16" height="16" rx="3" fill="${ln[c] === r ? LINE_COLORS[i] : 'rgba(245,233,211,.12)'}"/>`);
+    return `<div class="linemap"><svg viewBox="0 0 100 60">${dots.join('')}</svg>Line ${i + 1}</div>`;
+  }).join('');
+
+  // ---------- UI sync ----------
+  let shownCredits = st.credits;
+  function syncUI() {
+    $('credits').textContent = fmt(shownCredits);
+    $('linebet').textContent = lineBet();
+    $('totalbet').textContent = fmt(totalBet());
+    $('jackpot').textContent = fmt(st.jackpot);
+    $('turbo').setAttribute('aria-pressed', st.turbo);
+    $('sound').setAttribute('aria-pressed', st.sound);
+    $('auto').setAttribute('aria-pressed', st.auto);
+    $('auto').textContent = st.auto ? 'Stop' : 'Auto';
+    const busy = st.spinning;
+    $('spin').disabled = busy || st.credits < totalBet();
+    $('lever').disabled = $('spin').disabled;
+    $('betDown').disabled = busy || st.betIdx === 0;
+    $('betUp').disabled = busy || st.betIdx === BETS.length - 1;
+    $('maxBet').disabled = busy || st.betIdx === BETS.length - 1;
+    $('brokeRow').hidden = busy || st.credits >= totalBet();
+    store.set('credits', st.credits); store.set('jackpot', st.jackpot); store.set('betIdx', st.betIdx);
+    store.set('turbo', st.turbo); store.set('sound', st.sound);
+  }
+  function countTo(el, from, to, ms, onTick) {
+    return new Promise(res => {
+      if (ms <= 0 || from === to) { el.textContent = fmt(to); res(); return; }
+      const t0 = performance.now(); let last = 0;
+      const step = now => {
+        const p = Math.min(1, (now - t0) / ms), v = from + (to - from) * (1 - Math.pow(1 - p, 3));
+        el.textContent = fmt(v);
+        if (onTick && now - last > 70) { onTick(); last = now; }
+        p < 1 ? requestAnimationFrame(step) : res();
+      };
+      requestAnimationFrame(step);
+    });
+  }
+  function say(msg, hot = false) { const t = $('ticker'); t.textContent = msg; t.classList.toggle('hot', hot); }
+
+  // ---------- evaluation ----------
+  function evaluate(grid) {
+    const wins = [];
+    LINES.forEach((ln, li) => {
+      const syms = ln.map((row, c) => grid[c][row]);
+      const target = syms.find(s => s !== 'wild') ?? 'wild';
+      let n = 0; while (n < 5 && (syms[n] === target || syms[n] === 'wild')) n++;
+      let lead = 0; while (lead < 5 && syms[lead] === 'wild') lead++;
+      const a = n >= 3 ? BY_ID[target].pay[n] : 0;
+      const b = lead >= 3 ? BY_ID.wild.pay[lead] : 0;
+      const [sym, count, mult] = b > a ? ['wild', lead, b] : [target, n, a];
+      if (mult > 0) wins.push({ line: li, sym, count, amount: mult * lineBet(), jackpot: sym === 'gem' && count === 5 });
+    });
+    return wins;
+  }
+
+  // ---------- win line overlay ----------
+  const linesSvg = $('lines');
+  function cellCenter(c, r) {
+    const box = linesSvg.getBoundingClientRect();
+    const rb = reels[c].reel.getBoundingClientRect();
+    const h = rb.height / ROWS;
+    return [rb.left - box.left + rb.width / 2, rb.top - box.top + h * r + h / 2];
+  }
+  function drawLines(wins, only = null) {
+    const box = linesSvg.getBoundingClientRect();
+    linesSvg.setAttribute('viewBox', `0 0 ${box.width} ${box.height}`);
+    linesSvg.innerHTML = wins.filter((w, i) => only === null || i === only).map(w => {
+      const pts = LINES[w.line].map((r, c) => cellCenter(c, r));
+      const first = pts[0], last = pts[4];
+      const all = [[first[0] - 30, first[1]], ...pts, [last[0] + 30, last[1]]];
+      const col = LINE_COLORS[w.line];
+      return `<polyline points="${all.map(p => p.join(',')).join(' ')}" stroke="${col}" style="color:${col}"/>`;
+    }).join('');
+  }
+  function markCells(wins, only = null) {
+    document.querySelectorAll('.cell.win').forEach(c => c.classList.remove('win'));
+    wins.forEach((w, i) => {
+      if (only !== null && i !== only) return;
+      LINES[w.line].slice(0, w.count).forEach((r, c) => reels[c].strip.children[r]?.classList.add('win'));
+    });
+  }
+  let cycleTimer = null;
+  function clearWins() {
+    clearInterval(cycleTimer); cycleTimer = null;
+    linesSvg.innerHTML = ''; markCells([]);
+  }
+  function showWins(wins) {
+    lastWins = wins;
+    drawLines(wins); markCells(wins);
+    if (wins.length < 2) { if (wins[0]) say(describe(wins[0]), true); return; }
+    let i = -1;
+    const next = () => {
+      i = (i + 1) % (wins.length + 1);
+      if (i === wins.length) { drawLines(wins); markCells(wins); say(`${wins.length} winning lines`, true); }
+      else { drawLines(wins, i); markCells(wins, i); say(describe(wins[i]), true); }
+    };
+    next(); cycleTimer = setInterval(next, 1300);
+  }
+  const describe = w => `Line ${w.line + 1} · ${w.count}× ${BY_ID[w.sym].name} · pays ${fmt(w.amount)}`;
+
+  // ---------- spin ----------
+  async function spin(source = 'button') {
+    if (typeof source !== 'string') source = 'button';
+    if (st.spinning) return;
+    if (st.credits < totalBet()) {
+      stopAuto(); say('Not enough credits for this bet. Lower the bet or top up.');
+      track('Spin Blocked', { reason: 'insufficient_credits', credits: st.credits, total_bet: totalBet() });
+      return;
+    }
+    const spinStart = performance.now();
+    const creditsBefore = st.credits;
+    track('Spin Started', {
+      source, line_bet: lineBet(), total_bet: totalBet(), lines: LINES.length,
+      credits_before: creditsBefore, turbo: st.turbo, auto: st.auto, sound: st.sound,
+    });
+    audio();
+    st.spinning = true;
+    clearWins();
+    const bet = totalBet();
+    const from = st.credits;
+    st.credits -= bet;
+    st.jackpot += bet * 0.1;
+    shownCredits = st.credits;
+    countTo($('credits'), from, st.credits, 250);
+    $('win').textContent = '0';
+    syncUI();
+    say(st.auto ? 'Auto spin…' : 'Good luck…');
+
+    const result = Array.from({ length: REELS }, () => Array.from({ length: ROWS }, pick));
+    // anticipation: 2+ diamonds/wilds visible on the first three reels
+    const hot = result.slice(0, 3).flat().filter(s => s === 'gem' || s === 'seven').length >= 2;
+
+    const fast = st.turbo || reduceMotion;
+    const base = fast ? 380 : 950, stagger = fast ? 110 : 230;
+    const cellH = reels[0].strip.children[0].getBoundingClientRect().height;
+
+    let ticking = setInterval(() => sfx.tick(), 70);
+    const done = reels.map(({ reel, strip }, r) => {
+      const filler = Array.from({ length: fast ? 10 : 18 + r * 4 }, pick);
+      const syms = [...st.grid[r], ...filler, ...result[r]];
+      strip.innerHTML = syms.map(id => `<div class="cell" data-sym="${id}">${icon(id)}</div>`).join('');
+      const dist = (syms.length - ROWS) * cellH;
+      const teaseExtra = hot && r >= 3 && !fast ? 700 * (r - 2) : 0;
+      const dur = base + stagger * r + teaseExtra;
+      if (teaseExtra) setTimeout(() => { reel.classList.add('tease'); sfx.tease(); }, base + stagger * (r - 1));
+      const anim = strip.animate(
+        [{ transform: 'translateY(0)' }, { transform: `translateY(${-dist}px)` }],
+        { duration: dur, easing: 'cubic-bezier(.2,.65,.3,1.08)', fill: 'forwards' });
+      if (!reduceMotion) strip.animate(
+        [{ filter: 'blur(0)' }, { filter: 'blur(2.5px)', offset: .12 }, { filter: 'blur(2.5px)', offset: .75 }, { filter: 'blur(0)' }],
+        { duration: dur });
+      return anim.finished.then(() => {
+        anim.cancel(); reel.classList.remove('tease');
+        renderStrip(r, result[r]);
+        sfx.stop();
+      });
+    });
+    await Promise.all(done);
+    clearInterval(ticking);
+    st.grid = result;
+
+    const wins = evaluate(result);
+    let total = wins.reduce((a, w) => a + w.amount, 0);
+    const hitJackpot = wins.some(w => w.jackpot);
+    const jackpotAmount = hitJackpot ? Math.round(st.jackpot) : 0;
+    if (hitJackpot) { total += jackpotAmount; st.jackpot = 5000; }
+
+    const best = wins.slice().sort((a, b) => b.amount - a.amount)[0];
+    const isBig = hitJackpot || total >= bet * 15;
+    track('Spin Result', {
+      source, line_bet: lineBet(), total_bet: bet,
+      win_amount: total, net: total - bet, win_multiplier: +(total / bet).toFixed(2),
+      is_win: total > 0, winning_lines: wins.length,
+      best_symbol: best?.sym ?? null, best_count: best?.count ?? 0,
+      big_win: isBig, jackpot: hitJackpot, near_miss_tease: hot,
+      credits_before: creditsBefore, credits_after: st.credits + total,
+      duration_ms: Math.round(performance.now() - spinStart),
+    });
+    if (hitJackpot) track('Jackpot Won', { amount: jackpotAmount, line_bet: lineBet() });
+    else if (isBig) track('Big Win', { amount: total, win_multiplier: +(total / bet).toFixed(2), line_bet: lineBet() });
+    identify({ credits: st.credits + total, line_bet: lineBet() }, { total_spins: 1, total_wagered: bet, total_won: total, ...(hitJackpot ? { jackpots_won: 1 } : {}) });
+    if (st.credits + total < totalBet()) track('Out Of Credits', { credits: st.credits + total, line_bet: lineBet() });
+
+    if (total > 0) {
+      showWins(wins);
+      const big = isBig;
+      sfx.win(big);
+      const before = st.credits;
+      st.credits += total;
+      if (big) await bigWin(total, hitJackpot);
+      else { coins(Math.min(60, 10 + total / bet * 4)); }
+      $('win').textContent = fmt(total);
+      await countTo($('credits'), before, st.credits, fast ? 300 : Math.min(1600, 400 + total * 2), sfx.coin);
+      shownCredits = st.credits;
+    } else {
+      say(st.credits < bet ? 'Out of credits. Top up to keep playing.' : 'No win. Spin again.');
+    }
+    st.spinning = false;
+    syncUI();
+    if (st.auto) {
+      if (st.credits >= totalBet()) setTimeout(() => st.auto && spin('auto'), total > 0 ? 1200 : 350);
+      else stopAuto();
+    }
+  }
+
+  function stopAuto() { st.auto = false; syncUI(); }
+
+  // ---------- big win ----------
+  function bigWin(amount, jackpot) {
+    return new Promise(res => {
+      const ov = $('bigwin');
+      const mult = amount / totalBet();
+      $('bigTitle').textContent = jackpot ? 'Jackpot' : mult >= 50 ? 'Mega win' : 'Big win';
+      ov.hidden = false;
+      $('cabinet').classList.add('celebrate');
+      if (!reduceMotion) { document.querySelector('.cabinet-row').classList.add('shake'); setTimeout(() => document.querySelector('.cabinet-row').classList.remove('shake'), 450); }
+      coins(jackpot ? 260 : 160, true);
+      countTo($('bigAmt'), 0, amount, reduceMotion ? 0 : 1800, sfx.coin);
+      let closed = false;
+      const close = () => {
+        if (closed) return; closed = true;
+        ov.hidden = true; $('cabinet').classList.remove('celebrate');
+        ov.removeEventListener('click', close); res();
+      };
+      ov.addEventListener('click', close);
+      setTimeout(close, st.auto ? 3200 : 6000);
+    });
+  }
+
+  // ---------- coin particles ----------
+  const fx = $('fx'), ctx = fx.getContext('2d');
+  let parts = [], running = false;
+  function sizeFx() { const d = Math.min(2, devicePixelRatio || 1); fx.width = innerWidth * d; fx.height = innerHeight * d; ctx.setTransform(d, 0, 0, d, 0, 0); }
+  sizeFx(); addEventListener('resize', () => { sizeFx(); if (st.grid && linesSvg.innerHTML) drawLines(lastWins); });
+  let lastWins = [];
+  function coins(n, rain = false) {
+    if (reduceMotion) return;
+    const rb = reelsEl.getBoundingClientRect();
+    for (let i = 0; i < n; i++) {
+      parts.push(rain
+        ? { x: rand() * innerWidth, y: -20 - rand() * innerHeight * .6, vx: (rand() - .5) * 2, vy: 2 + rand() * 4, r: 8 + rand() * 8, a: rand() * 6, va: .1 + rand() * .2, life: 1 }
+        : { x: rb.left + rb.width / 2 + (rand() - .5) * rb.width * .6, y: rb.top + rb.height / 2, vx: (rand() - .5) * 12, vy: -8 - rand() * 9, r: 6 + rand() * 6, a: rand() * 6, va: .1 + rand() * .25, life: 1 });
+    }
+    if (!running) { running = true; requestAnimationFrame(loop); }
+  }
+  function loop() {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    parts = parts.filter(p => p.y < innerHeight + 40 && p.life > 0);
+    for (const p of parts) {
+      p.vy += .35; p.x += p.vx; p.y += p.vy; p.a += p.va;
+      const w = Math.abs(Math.cos(p.a)) * p.r + 1;
+      ctx.save(); ctx.translate(p.x, p.y);
+      const g = ctx.createLinearGradient(0, -p.r, 0, p.r);
+      g.addColorStop(0, '#fff1b8'); g.addColorStop(.5, '#f2c14e'); g.addColorStop(1, '#9a6512');
+      ctx.fillStyle = g; ctx.strokeStyle = '#7a4d0c'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.ellipse(0, 0, w, p.r, 0, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+      if (w > p.r * .5) { ctx.fillStyle = 'rgba(122,77,12,.5)'; ctx.font = `700 ${p.r}px Limelight, serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.scale(w / p.r, 1); ctx.fillText('7', 0, 1); }
+      ctx.restore();
+    }
+    if (parts.length) requestAnimationFrame(loop); else { running = false; ctx.clearRect(0, 0, innerWidth, innerHeight); }
+  }
+
+  // ---------- lever ----------
+  const lever = $('lever');
+  function pullLever(source = 'lever') {
+    if (typeof source !== 'string') source = 'lever';
+    if (lever.disabled || st.spinning) return;
+    lever.classList.add('pulled'); sfx.lever();
+    setTimeout(() => { lever.classList.remove('pulled'); spin(source); }, 200);
+  }
+  lever.addEventListener('click', () => pullLever('lever'));
+
+  // ---------- controls ----------
+  const betChanged = (method, from) => { if (lineBet() !== from) track('Bet Changed', { method, from_line_bet: from, to_line_bet: lineBet(), total_bet: totalBet() }); };
+  $('spin').addEventListener('click', () => spin('button'));
+  $('betDown').addEventListener('click', () => { const f = lineBet(); st.betIdx = Math.max(0, st.betIdx - 1); tone(500, .05, 'square', .03); syncUI(); betChanged('decrease', f); });
+  $('betUp').addEventListener('click', () => { const f = lineBet(); st.betIdx = Math.min(BETS.length - 1, st.betIdx + 1); tone(700, .05, 'square', .03); syncUI(); betChanged('increase', f); });
+  $('maxBet').addEventListener('click', () => {
+    const f = lineBet();
+    st.betIdx = BETS.length - 1;
+    while (st.betIdx > 0 && totalBet() > st.credits) st.betIdx--;
+    syncUI(); betChanged('max_bet', f); if (!st.spinning) spin('max_bet');
+  });
+  $('auto').addEventListener('click', () => { st.auto = !st.auto; syncUI(); track('Setting Toggled', { setting: 'auto', enabled: st.auto }); if (st.auto && !st.spinning) spin('auto'); });
+  $('turbo').addEventListener('click', () => { st.turbo = !st.turbo; syncUI(); track('Setting Toggled', { setting: 'turbo', enabled: st.turbo }); });
+  $('sound').addEventListener('click', () => { st.sound = !st.sound; syncUI(); track('Setting Toggled', { setting: 'sound', enabled: st.sound }); if (st.sound) tone(880, .08, 'triangle', .05); });
+  $('paytable').addEventListener('toggle', () => { if ($('paytable').open) track('Pay Table Opened'); });
+  $('bigwin').addEventListener('click', () => track('Big Win Dismissed'), { once: false });
+  $('refill').addEventListener('click', () => {
+    track('Credits Topped Up', { amount: 1000, credits_before: st.credits });
+    const from = st.credits; st.credits += 1000; shownCredits = st.credits;
+    countTo($('credits'), from, st.credits, 600, sfx.coin); say('Topped up 1,000 credits. Good luck.'); syncUI();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.code !== 'Space' && e.code !== 'Enter') return;
+    const tag = e.target.tagName;
+    if (tag === 'BUTTON' || tag === 'SUMMARY' || tag === 'INPUT') return;
+    e.preventDefault();
+    if (!$('bigwin').hidden) { $('bigwin').click(); return; }
+    pullLever('keyboard');
+  });
+
+  syncUI();
+  track('Game Loaded', { credits: st.credits, line_bet: lineBet(), turbo: st.turbo, sound: st.sound, returning_player: st.credits !== 1000 });
+  identify({ credits: st.credits, line_bet: lineBet() });
+})();
+</script>
+</body>
+</html>
